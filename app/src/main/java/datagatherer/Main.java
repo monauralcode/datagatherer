@@ -15,7 +15,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
-public class Main implements DataEntryView.Setup {
+public class Main implements DataEntryView.Context {
+    
     private Main(DataEntryModel model) {
         model.attach(view());
     }

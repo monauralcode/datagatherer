@@ -8,6 +8,7 @@ import java.util.concurrent.Executor;
 import datagatherer.util.Signal;
 
 public class DataEntryModel implements DataEntry.Command {
+
     private enum Tag {
         NONE, ENTRY, STATS
     }

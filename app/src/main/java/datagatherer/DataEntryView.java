@@ -11,7 +11,7 @@ public class DataEntryView implements DataEntry.Activity {
     /**
      * All methods will only be called once in the Swing main thread.
      */
-    public interface Setup {
+    public interface Context {
         /**
          * The first method to be called when the view is attached to the model.
          * 
@@ -37,7 +37,7 @@ public class DataEntryView implements DataEntry.Activity {
         void onKeyPress(Consumer<Integer> listener);
 
         /**
-         * Creates a view using this setup.
+         * Creates a view in this context.
          *
          * @return A view instance
          */
@@ -47,23 +47,23 @@ public class DataEntryView implements DataEntry.Activity {
     }
 
     private static final DecimalFormat WITH_COMMAS = new DecimalFormat("#,###");
-    private final Setup setup;
+    private final Context context;
     private JLabel entry;
     private JLabel range;
     private JLabel average;
 
-    public DataEntryView(Setup setup) {
-        this.setup = setup;
+    public DataEntryView(Context context) {
+        this.context = context;
     }
 
     @Override
     public void onReady(DataEntry.Command actions) {
-        setup.prepare();
+        context.prepare();
         entry = new JLabel();
         range = new JLabel();
         average = new JLabel();
-        setup.layout(entry, range, average);
-        setup.onKeyPress((keyCode) -> {
+        context.layout(entry, range, average);
+        context.onKeyPress((keyCode) -> {
             switch (keyCode) {
                 case KeyEvent.VK_BACK_SPACE:
                 case KeyEvent.VK_DECIMAL:
