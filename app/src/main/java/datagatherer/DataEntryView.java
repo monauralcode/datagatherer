@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 public class DataEntryView implements DataEntry.Activity {
 
     /**
-     * All methods will only be called once in the Swing main thread.
+     * All abstract methods will be called once in the Swing main thread.
      */
     public interface Context {
         /**
