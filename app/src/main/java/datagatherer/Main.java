@@ -3,8 +3,12 @@ package datagatherer;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.KeyboardFocusManager;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -16,9 +20,12 @@ import javax.swing.border.EmptyBorder;
 
 import datagatherer.util.Convenience;
 
-public class Main implements DataEntryView.Context, Convenience {
+public class Main implements DataEntrySwing.Context, Convenience {
+
+    private final DataEntryModel model;
 
     private Main(DataEntryModel model) {
+        this.model = model;
         model.attach(view());
     }
 
@@ -38,9 +45,11 @@ public class Main implements DataEntryView.Context, Convenience {
         var baseFont = entry.getFont();
         var labelFont = baseFont.deriveFont(Font.BOLD);
         var frame = new JFrame();
-        frame.setContentPane(columnWithRows(4, (i, row) -> {
+        var dumpBtn = new JButton("flush to clipboard");
+        dumpBtn.addActionListener((ignored) -> model.flush(Main::copyToClipboard));
+        frame.setContentPane(columnWithRows(4, (pos, row) -> {
             row.setBorder(padding);
-            switch (i) {
+            switch (pos) {
                 case 0:
                     row.add(entry).setFont(baseFont.deriveFont(Font.BOLD, 24f));
                     break;
@@ -56,7 +65,7 @@ public class Main implements DataEntryView.Context, Convenience {
                     break;
                 case 3:
                     row.add(Box.createHorizontalGlue());
-                    row.add(new JButton("save csv")).setFocusable(false);
+                    row.add(dumpBtn).setFocusable(false);
                     break;
                 default:
                     break;
@@ -79,6 +88,18 @@ public class Main implements DataEntryView.Context, Convenience {
             }
             return false;
         });
+    }
+
+    static void copyToClipboard(List<Long> data) {
+        if (data.isEmpty()) {
+            return;
+        }
+        var text = data.stream()
+            .map(String::valueOf)
+            .collect(Collectors.joining("\n"));
+        Toolkit.getDefaultToolkit()
+            .getSystemClipboard()
+            .setContents(new StringSelection(text), null);
     }
 
     public static void main(String[] args) {

@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 import javax.swing.JLabel;
 
-public class DataEntryView implements DataEntry.Activity {
+public class DataEntrySwing implements DataEntry.Activity {
 
     /**
      * All abstract methods will be called once in the Swing main thread.
@@ -42,7 +42,7 @@ public class DataEntryView implements DataEntry.Activity {
          * @return A view instance
          */
         default DataEntry.Activity view() {
-            return new DataEntryView(this);
+            return new DataEntrySwing(this);
         }
     }
 
@@ -52,7 +52,7 @@ public class DataEntryView implements DataEntry.Activity {
     private JLabel range;
     private JLabel average;
 
-    public DataEntryView(Context context) {
+    public DataEntrySwing(Context context) {
         this.context = context;
     }
 

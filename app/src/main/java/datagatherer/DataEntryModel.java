@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.function.Consumer;
 
 import datagatherer.util.Signal;
 
@@ -90,6 +91,26 @@ public class DataEntryModel implements DataEntry.Command {
         repeatedCorrections = 0;
         tag = Tag.STATS;
         update.send();
+    }
+
+    public void flush(Consumer<List<Long>> block) {
+        dump(true, block);
+    }
+
+    public void dump(boolean flush, Consumer<List<Long>> block) {
+        block.accept(new ArrayList<>(samples));
+        if (flush) {
+            samples.clear();
+            entry = 0;
+            count = 0;
+            sum = 0;
+            min = Long.MAX_VALUE;
+            max = Long.MIN_VALUE;
+            mean = BigDecimal.ZERO;
+            repeatedCorrections = 0;
+            tag = Tag.STATS;
+            update.send();
+        }
     }
 
     /**
